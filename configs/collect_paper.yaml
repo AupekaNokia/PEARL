@@ -1,0 +1,50 @@
+# Pipeline 2a: full collection grid used in the paper.
+#   python -m pearl.collect.run configs/collect_paper.yaml
+# Each grid is a cartesian product models x batch_sizes x sequence_lengths x max_new_tokens x precisions.
+# Grid points that do not fit in GPU memory are logged and skipped.
+# Optional per grid: `revisions: {<model>: <hub commit>}` to pin model revisions.
+
+output_dir: results/collect
+
+protocol:
+  gpu_id: 0                  # NVML index
+  seed: 42
+  interval_ms: 10            # NVML poll period (nvmlDeviceGetSamples)
+  idle_duration_s: 10.0      # idle baseline before the grid
+  warmup_steps: 10           # batch-1 generate() calls of min(8, max_new_tokens) tokens, not measured
+  forwards_per_measure: 10   # consecutive generate() calls in the measured window
+  trace_margin_ms: 150.0     # power sampled before/after the window (for alignment)
+  use_cache: true
+
+grids:
+  # Short prompts: 11 models.
+  - models:
+      - Qwen/Qwen3-0.6B
+      - Qwen/Qwen3-1.7B
+      - Qwen/Qwen3-4B
+      - Qwen/Qwen3-8B
+      - meta-llama/Llama-3.2-1B-Instruct
+      - meta-llama/Llama-3.2-3B-Instruct
+      - meta-llama/Llama-3.1-8B-Instruct
+      - google/gemma-3-1b-it
+      - google/gemma-3-4b-it
+      - microsoft/Phi-4-mini-instruct
+      - mistralai/Mistral-7B-Instruct-v0.3
+    batch_sizes: [1, 32, 64, 128]
+    sequence_lengths: [16, 32, 128]
+    max_new_tokens: [16, 64, 128]
+    precisions: [fp16, bf16, fp32]
+
+  # Long contexts: Qwen3 and Llama models.
+  - models:
+      - Qwen/Qwen3-0.6B
+      - Qwen/Qwen3-1.7B
+      - Qwen/Qwen3-4B
+      - Qwen/Qwen3-8B
+      - meta-llama/Llama-3.2-1B-Instruct
+      - meta-llama/Llama-3.2-3B-Instruct
+      - meta-llama/Llama-3.1-8B-Instruct
+    batch_sizes: [1, 32, 64, 128]
+    sequence_lengths: [256, 1024, 2048, 4096, 8192]
+    max_new_tokens: [16, 64, 128]
+    precisions: [fp16, bf16, fp32]

@@ -1,0 +1,21 @@
+# Pipeline 2a: one small grid point to check the setup in a few minutes.
+#   python -m pearl.collect.run configs/collect_smoke.yaml
+
+output_dir: results/collect_smoke
+
+protocol:
+  gpu_id: 0
+  seed: 42
+  interval_ms: 10
+  idle_duration_s: 1.0
+  warmup_steps: 1
+  forwards_per_measure: 20
+  trace_margin_ms: 150.0
+  use_cache: true
+
+grids:
+  - models: [Qwen/Qwen3-0.6B]
+    batch_sizes: [1]
+    sequence_lengths: [32]
+    max_new_tokens: [16]
+    precisions: [fp16]

@@ -1,0 +1,15 @@
+# Python >= 3.10, NVIDIA GPU with NVML (driver exposing nvmlDeviceGetSamples).
+# PyTorch: pick the wheel matching your CUDA driver (https://pytorch.org/get-started/locally/).
+torch>=2.4.0
+transformers>=4.55.0
+accelerate>=0.30.0
+huggingface_hub>=0.20.0
+sentencepiece>=0.2.0
+protobuf>=4.25.0
+nvidia-ml-py>=12.560.30
+numpy>=1.26.0,<2
+pandas>=2.0.0
+pyarrow>=14.0.0
+pyyaml>=6.0
+matplotlib>=3.8.0
+pytest>=7.0
